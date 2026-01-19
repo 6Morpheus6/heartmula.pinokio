@@ -17,9 +17,9 @@
           "pip install -U gradio pydub",
           "pip install -U \"uvicorn[standard]\" websockets wsproto",
           "mkdir -p ckpt",
-          "hf download --local-dir './ckpt' 'HeartMuLa/HeartMuLaGen'",
-          "hf download --local-dir './ckpt/HeartMuLa-oss-3B' 'HeartMuLa/HeartMuLa-oss-3B'",
-          "hf download --local-dir './ckpt/HeartCodec-oss' 'HeartMuLa/HeartCodec-oss'"
+          "hf download --local-dir ./ckpt HeartMuLa/HeartMuLaGen",
+          "hf download --local-dir ./ckpt/HeartMuLa-oss-3B HeartMuLa/HeartMuLa-oss-3B",
+          "hf download --local-dir ./ckpt/HeartCodec-oss HeartMuLa/HeartCodec-oss"
         ]
       }
     }
