@@ -8,7 +8,9 @@
           "path": "env",
           "python": "python=3.10"
         },
-        "message": "python app.py",
+        "message": [
+          "python -c \"import heartlib\" || python -c \"import os, subprocess; os.path.isdir('heartlib') or subprocess.check_call(['git','clone','https://github.com/HeartMuLa/heartlib.git']); subprocess.check_call(['python','-m','pip','install','-e','heartlib'])\"",
+          "python app.py"],
         "on": [
           {
             "event": "/http:\\/\\/[0-9.:]+/",
