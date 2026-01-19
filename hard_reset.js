@@ -1,0 +1,13 @@
+module.exports = {
+    run: [{
+        method: "shell.run",
+        params: {
+            message: [
+                "rm -rf env || true",
+                "rm -rf heartlib || true",
+                "rm -rf ckpt || true",
+                "rm -rf outputs || true"
+            ]
+        }
+    }]
+}

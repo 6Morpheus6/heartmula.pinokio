@@ -6,17 +6,17 @@ module.exports = {
   menu: async (kernel, info) => {
     const installed = info.exists("env") && info.exists("ckpt");
     const running = {
-      install: info.running("install.json"),
-      start: info.running("start.json"),
-      reset: info.running("reset.json")
+      install: info.running("install.js"),
+      start: info.running("start.js"),
+      reset: info.running("reset.js")
     };
-    const local = info.local("start.json");
+    const local = info.local("start.js");
 
     if (running.install) {
       return [{
         icon: "fa-solid fa-plug",
         text: "Installing…",
-        href: "install.json"
+        href: "install.js"
       }];
     }
 
@@ -24,7 +24,7 @@ module.exports = {
       return [{
         icon: "fa-solid fa-plug",
         text: "Install",
-        href: "install.json"
+        href: "install.js"
       }];
     }
 
@@ -32,7 +32,7 @@ module.exports = {
       {
         icon: "fa-solid fa-rocket",
         text: running.start ? "Running…" : "Start",
-        href: "start.json"
+        href: "start.js"
       },
       ...(local && local.url ? [{
         icon: "fa-solid fa-rocket",
@@ -42,17 +42,17 @@ module.exports = {
       {
         icon: "fa-solid fa-plug",
         text: running.reset ? "Updating…" : "Update",
-        href: "update.json"
+        href: "update.js"
       },
       {
         icon: "fa-solid fa-trash",
         text: running.reset ? "Resetting…" : "Reset (keeps /ckpt)",
-        href: "reset.json"
+        href: "reset.js"
       },
       {
         icon: "fa-solid fa-trash",
         text: running.reset ? "Hard Resetting…" : "Hard Reset (deletes /ckpt)",
-        href: "hard_reset.json"
+        href: "hard_reset.js"
       }
     ];
   }
