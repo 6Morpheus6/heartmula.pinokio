@@ -1,16 +1,14 @@
 {
+  "requires": {
+    "bundle": "ai"
+  },
   "daemon": true,
   "run": [
     {
       "method": "shell.run",
       "params": {
-        "conda": {
-          "path": "env",
-          "python": "python=3.10"
-        },
-        "message": [
-          "python -c \"import heartlib\" || python -c \"import os, subprocess; os.path.isdir('heartlib') or subprocess.check_call(['git','clone','https://github.com/HeartMuLa/heartlib.git']); subprocess.check_call(['python','-m','pip','install','-e','heartlib'])\"",
-          "python app.py"],
+        "venv": "app/env",
+        "message": "python app.py",
         "on": [
           {
             "event": "/http:\\/\\/[0-9.:]+/",
