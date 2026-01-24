@@ -1,4 +1,5 @@
 import os
+import gc
 import time
 from pathlib import Path
 
@@ -10,6 +11,7 @@ from heartlib.pipelines.music_generation import HeartMuLaGenPipeline
 
 import torch
 
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True,max_split_size_mb:128"
 
 APP_DIR = Path(__file__).resolve().parent
 ASSETS_DIR = APP_DIR / "assets"
@@ -17,6 +19,12 @@ OUTPUTS_DIR = APP_DIR / "outputs"
 OUTPUTS_DIR.mkdir(exist_ok=True, parents=True)
 
 _PIPELINE_CACHE = {}
+
+def clear_memory():
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()
 
 
 def _auto_device_str() -> str:
@@ -33,6 +41,8 @@ def _load_text_file(path: str) -> str:
 
 
 def _get_pipeline(model_path: str, version: str, device_str: str):
+    clear_memory()
+
     mp = str(Path(model_path).resolve())
     key = (mp, version, device_str)
     if key in _PIPELINE_CACHE:
@@ -87,18 +97,14 @@ def generate(
     if device_choice == "auto":
         device_str = _auto_device_str()
 
-    pipe = _get_pipeline(model_path=model_path, version=version, device_str=device_str)
-
     out = OUTPUTS_DIR / (
         save_name.strip() if save_name and save_name.strip() else f"output_{int(time.time())}.wav"
     )
     # If user gave no extension, default to wav (mp3 requires ffmpeg-enabled backend)
     if out.suffix.lower() not in {".mp3", ".wav"}:
         out = out.with_suffix(".wav")
-
-    try:
-        # HeartMuLaGenPipeline is a HuggingFace Pipeline.
-        # It saves audio in postprocess(save_path=...).
+    def run_pipe():
+        pipe = _get_pipeline(model_path=model_path, version=version, device_str=device_str)
         pipe(
             {"lyrics": lyrics_text, "tags": tags_text},
             save_path=str(out),
@@ -107,13 +113,26 @@ def generate(
             temperature=float(temperature),
             cfg_scale=float(cfg_scale),
         )
-    except Exception as e:
-        # Common gotcha: saving mp3 without ffmpeg/encoder support.
-        if out.suffix.lower() == ".mp3":
-            raise gr.Error(
-                f"Generation ran but saving MP3 failed. Try a .wav save name (recommended), or add ffmpeg to the environment.\n\nError: {e}"
-            )
-        raise
+    with torch.no_grad():
+        try:
+            clear_memory()
+            run_pipe() 
+        except torch.OutOfMemoryError:
+            print("Critical VRAM shortage! Attempting emergency cleanup...")
+            _PIPELINE_CACHE.clear()
+            clear_memory()
+            try:
+                run_pipe()
+            except torch.OutOfMemoryError:
+                raise gr.Error("Even after cleaning up: GPU memory full. Please reduce max_audio_length_ms.")
+        except Exception as e:
+            if out.suffix.lower() == ".mp3":
+                raise gr.Error(
+                    f"Generation ran but saving MP3 failed. Try a .wav save name (recommended), or add ffmpeg to the environment.\n\nError: {e}"
+                )
+            raise gr.Error(f"Error occurred: {e}")
+        finally:
+            clear_memory()
 
     return str(out), str(out)
 
