@@ -32,8 +32,10 @@ Hugging Face models:
 HeartMuLa’s upstream README also credits work based on ConversationTTS.
 
 ## License
-HeartMuLa / heartlib is released under **CC BY-NC 4.0** (non-commercial).  
-This wrapper does not change that — **commercial use is prohibited**.  
+HeartMuLa/heartlib is licensed under the
+**Apache License 2.0**
+A permissive license whose main conditions require preservation of copyright and license notices. 
+Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
 You are responsible for ensuring any generated content does not infringe third-party rights.
 
 ## Citation
