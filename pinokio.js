@@ -2,6 +2,7 @@ module.exports = {
   version: "3.7",
   title: "HeartMuLa (HeartMuLaGen)",
   description: "Pinokio wrapper: installs HeartMuLa heartlib + downloads checkpoints + launches a Gradio UI for music generation.",
+  icon: "icon.png",
 
   menu: async (kernel, info) => {
     let installed = info.exists("app/env")
