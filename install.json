@@ -47,14 +47,14 @@
     {
       "method": "hf.download",
       "params": {
-        "_": ["HeartMuLa/HeartMuLa-oss-3B"],
+        "_": ["HeartMuLa/HeartMuLa-RL-oss-3B-20260123"],
         "local-dir": "ckpt/HeartMuLa-oss-3B"
       }
     },
     {
       "method": "hf.download",
       "params": {
-        "_": ["HeartMuLa/HeartCodec-oss"],
+        "_": ["HeartMuLa/HeartCodec-oss-20260123"],
         "local-dir": "ckpt/HeartCodec-oss"
       }
     }
